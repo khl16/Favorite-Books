@@ -1,0 +1,12 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.no_style {
+    list-style: none;
+}
+
+h1, h2, h5, label, p, ul {
+    color: white;
+}

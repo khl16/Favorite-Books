@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <title>Books</title>
+</head>
+
+<body style=background-color:rgb(13,17,23);>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <h1>Welcome, {{ user.first_name }}!</h1>
+                <h2 style=color:rgb(0,91,201);>Add a Favorite Book</h2>
+                <form action="/books/create" method="POST">
+                    {% csrf_token %}
+                    {% for message in messages %}
+                    {% if 'title' in message.tags %}
+                    <p style=color:red;>{{ message }}</p>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" name="title" id="title" class="form-control">
+                    </div>
+                    {% for message in messages %}
+                    {% if 'description' in message.tags %}
+                    <p style=color:red;>{{ message }}</p>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <input type="text" name="description" id="description" class="form-control">
+                    </div>
+                    <button style=margin-top:15px; class="btn btn-secondary">Add</button>
+                </form>
+            </div>
+            <div class="col-md-5" style=margin-left:80px;>
+                <h1>All Books</h1>
+                    {% for book in all_books %}
+                        {% if user in book.users_who_like.all %}
+                    <h5><a href="/books/{{book.id}}">{{ book.title }}</a></h5>
+                    <p>(added by {{ book.uploaded_by.first_name }} {{book.uploaded_by.last_name }})</p>
+                    <p>This is one of your favorites</p>
+                        {% endif %}
+                    {% endfor %}
+                    {% for book in all_books %}
+                        {% if user not in book.users_who_like.all %}
+                    <h5><a href="/books/{{book.id}}">{{ book.title }}</a></h5>
+                    <p>(added by {{ book.uploaded_by.first_name }} {{book.uploaded_by.last_name }})</p>
+                    <p><a href="/books/{{book.id}}/favorite">Add to Favorites</a></p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            <div class="col-md-1" style="text-align:right;">
+                <a href="user/logout">Log Out</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
